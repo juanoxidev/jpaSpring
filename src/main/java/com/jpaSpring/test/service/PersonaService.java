@@ -22,6 +22,7 @@ public class PersonaService implements IPersonaService {
 
 	@Override
 	public void savePersona(Persona persona) {
+		// save ademas de guardar modifica
 		this.personaRepository.save(persona);
 
 	}
@@ -36,5 +37,22 @@ public class PersonaService implements IPersonaService {
 	public Persona findPersona(Long id) {
 		// si no encuentro a la persona, devuelvo null en orElse.
 		return this.personaRepository.findById(id).orElse(null);
+	}
+
+	@Override
+	public void editPersona(Long idOriginal, String nuevoNombre, String nuevoApellido, int nuevaEdad) {
+		Persona personaAEditar = this.findPersona(idOriginal);
+		personaAEditar.setNombre(nuevoNombre);
+		personaAEditar.setApellido(nuevoApellido);
+		personaAEditar.setEdad(nuevaEdad);
+		this.savePersona(personaAEditar);
+		
+	}
+
+	@Override
+	public void editPersona(Persona persona) {
+		// save ademas de guardar modifica 
+		this.savePersona(persona);
+		
 	}
 }

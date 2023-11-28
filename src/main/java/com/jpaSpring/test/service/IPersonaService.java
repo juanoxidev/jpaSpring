@@ -17,5 +17,16 @@ public interface IPersonaService {
 
 	// metodo para encontrar una persona
 	public Persona findPersona(Long id);
+	
+	/* Metodo edit en JPA hibernate para relizar una modificacion
+	 * debemos recibir desde nuestro controller 
+	 * los nuevos datos del objeto que queremos modificar y su id original. 
+	 * A partir de esto buscamos el objeto mediante find, modificamos sus atributos
+	 * por los nuevos (mediando sets) y luego lo volveremos a guardar mediante save
+	 */
+	public void editPersona(Long idOriginal, String nuevoNombre, String nuevoApellido, int nuevaEdad);
+
+
+	public void editPersona(Persona persona);
 
 }
