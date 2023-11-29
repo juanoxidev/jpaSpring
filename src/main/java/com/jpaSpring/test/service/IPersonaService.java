@@ -1,10 +1,8 @@
 package com.jpaSpring.test.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.model.Persona;
 
 public interface IPersonaService {
@@ -20,7 +18,7 @@ public interface IPersonaService {
 
 	// metodo para encontrar una persona
 	public Persona findPersona(Long id);
-	
+
 	/* Metodo edit en JPA hibernate para relizar una modificacion
 	 * debemos recibir desde nuestro controller 
 	 * los nuevos datos del objeto que queremos modificar y su id original. 
@@ -32,6 +30,7 @@ public interface IPersonaService {
 
 	public void editPersona(Persona persona);
 
-	public void actualizarListaDeMascotas(Persona personaActual, Collection<Mascota> mascotas);
+	public void actualizarListaDeMascotas(Persona personaActual,
+			List<Map<String, Integer>> listaDeMascotasArrayListMap);
 
 }

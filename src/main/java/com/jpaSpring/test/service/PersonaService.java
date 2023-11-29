@@ -1,7 +1,8 @@
 package com.jpaSpring.test.service;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,23 +52,40 @@ public class PersonaService implements IPersonaService {
 		personaAEditar.setApellido(nuevoApellido);
 		personaAEditar.setEdad(nuevaEdad);
 		this.savePersona(personaAEditar);
-		
+
 	}
 
 	@Override
 	public void editPersona(Persona persona) {
 		// save ademas de guardar modifica 
 		this.savePersona(persona);
-		
+
 	}
+
+
 
 	@Override
-	public void actualizarListaDeMascotas(Persona personaActual, Collection<Mascota> mascotas) {
-	 String [] valores = (String[]) mascotas.toArray();
-	 System.out.println(valores);
+	public void actualizarListaDeMascotas(Persona personaActual,
+			List<Map<String, Integer>> listaDeMascotasArrayListMap) {
+		List<Long> listaDeIds = new ArrayList<>();
+		// Extraer los valores de "id_mascota" y agregarlos a listaDeIds
+		for (Map<String, Integer> mascota : listaDeMascotasArrayListMap) {
+			// Asumiendo que cada objeto tiene una única entrada con clave "id_mascota"
+			Long id = mascota.get("id_mascota").longValue();
+			if (id != null) {
+				listaDeIds.add(id);
+			}
+		}
+		List<Mascota> mascotas = new ArrayList<>();
+		for (Long id : listaDeIds) {
+			mascotas.add(this.mascotaRepository.getById(id));
+		}
+
+		personaActual.setUnaMascota(mascotas);
 		this.savePersona(personaActual);
+
 	}
 
 
-		
+
 }
