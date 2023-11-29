@@ -1,12 +1,17 @@
 package com.jpaSpring.test.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.model.Persona;
 import com.jpaSpring.test.service.IPersonaService;
 
 @RestController
-@RequestMapping("/personas") // url base
+@RequestMapping("/api/personas") // url base
 public class PersonaController {
 
 	@Autowired
@@ -49,6 +55,7 @@ public ResponseEntity<?> deletePersona(@PathVariable Long id) {
  * Mediante name identificamos a cada uno de los parametros para poder especificar su obligatoriedad o no.
  */
 
+
 @PutMapping("/editar/{id}")
 public ResponseEntity<?>  editPersona(@PathVariable Long id, @RequestParam(required = false, name ="nombre") String nuevoNombre, @RequestParam(required = false, name ="apellido") String nuevoApellido, @RequestParam(required = false, name ="edad") int nuevaEdad) {
 	this.personaService.editPersona(id, nuevoNombre, nuevoApellido, nuevaEdad);
@@ -56,12 +63,61 @@ public ResponseEntity<?>  editPersona(@PathVariable Long id, @RequestParam(requi
 	return new ResponseEntity<Persona>(persona,HttpStatus.OK);
 }
 
+/*
+ * PUT se utiliza cuando se proporciona una representación completa y se espera que el servidor reemplace completamente el recurso. 
+ * PATCH, por otro lado, se utiliza cuando solo se proporcionan los campos que deben actualizarse, permitiendo actualizaciones parciales sin tener que enviar la representación completa del recurso. 
+ * 
+ */
+//editarCompleto
 @PutMapping("/editar")
 public ResponseEntity<?>  editPersona(@RequestBody Persona persona){
 	this.personaService.editPersona(persona);
 	return new ResponseEntity<Persona>(this.personaService.findPersona(persona.getId()), HttpStatus.OK);
 }
 
+//editarParcial
+@PatchMapping("editarParcial/{id}")
+public ResponseEntity<Persona> actualizarParcialmentePersona(
+        @PathVariable Long id,
+        @RequestBody Map<String, Object> camposActualizables) {
+	
+	System.out.println(camposActualizables.values());
+    // Obtener la persona actual
+    Persona personaActual = personaService.findPersona(id);
+
+    if (personaActual == null) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // Actualizar solo los campos permitidos
+    if (camposActualizables.containsKey("nombre")) {
+        personaActual.setNombre((String) camposActualizables.get("nombre"));
+    }
+    if (camposActualizables.containsKey("apellido")) {
+        personaActual.setApellido((String) camposActualizables.get("apellido"));
+    }
+    if (camposActualizables.containsKey("edad")) {
+        personaActual.setEdad((int) camposActualizables.get("edad"));
+    }
+    if (camposActualizables.containsKey("unaMascota")) {
+    	ArrayList<Map<String, Integer>> listaDeMascotas = new ArrayList <Map<String, Integer>>((Collection<? extends Map<String, Integer>>) camposActualizables.get("unaMascota")); 
+        for (Map<String, Integer> mascota : listaDeMascotas) {
+            // Iterar sobre las entradas de cada HashMap
+            for (Map.Entry<String, Integer> entry : mascota.entrySet()) {
+                String clave = entry.getKey();
+                Integer valor = entry.getValue();
+                System.out.println("Clave: " + clave + ", Valor: " + valor);
+            }
+        }
+//    	this.personaService.actualizarListaDeMascotas(personaActual, mascotas);
+    }
+
+
+    // Guardar la persona actualizada
+    personaService.savePersona(personaActual);
+
+    return new ResponseEntity<>(personaActual, HttpStatus.OK);
+}
 
 
 }

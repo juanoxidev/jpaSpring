@@ -12,7 +12,7 @@ import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.service.IMascotaService;
 
 @RestController
-@RequestMapping("/mascotas") 
+@RequestMapping("/api/mascotas") 
 public class MascotaController {
 	
 @Autowired

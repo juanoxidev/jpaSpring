@@ -1,11 +1,14 @@
 package com.jpaSpring.test.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.model.Persona;
+import com.jpaSpring.test.repository.MascotaRepository;
 import com.jpaSpring.test.repository.PersonaRepository;
 
 @Service
@@ -13,6 +16,8 @@ public class PersonaService implements IPersonaService {
 
 	@Autowired
 	private PersonaRepository personaRepository;
+	@Autowired
+	private MascotaRepository mascotaRepository;
 
 	@Override
 	public List<Persona> getPersonas() {
@@ -55,4 +60,14 @@ public class PersonaService implements IPersonaService {
 		this.savePersona(persona);
 		
 	}
+
+	@Override
+	public void actualizarListaDeMascotas(Persona personaActual, Collection<Mascota> mascotas) {
+	 String [] valores = (String[]) mascotas.toArray();
+	 System.out.println(valores);
+		this.savePersona(personaActual);
+	}
+
+
+		
 }

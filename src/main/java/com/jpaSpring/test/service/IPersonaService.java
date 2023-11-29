@@ -1,7 +1,10 @@
 package com.jpaSpring.test.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.model.Persona;
 
 public interface IPersonaService {
@@ -28,5 +31,7 @@ public interface IPersonaService {
 
 
 	public void editPersona(Persona persona);
+
+	public void actualizarListaDeMascotas(Persona personaActual, Collection<Mascota> mascotas);
 
 }
