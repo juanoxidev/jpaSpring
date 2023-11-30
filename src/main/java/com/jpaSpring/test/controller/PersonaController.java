@@ -1,6 +1,6 @@
 package com.jpaSpring.test.controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,18 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.jpaSpring.test.model.Mascota;
 import com.jpaSpring.test.model.Persona;
-import com.jpaSpring.test.service.IMascotaService;
 import com.jpaSpring.test.service.IPersonaService;
 
 @RestController
 @RequestMapping("/api/personas") // url base
 public class PersonaController {
 
-	@Autowired
-	private IMascotaService mascotaService;
+
 	@Autowired
 	private IPersonaService personaService;
 
@@ -85,51 +81,15 @@ public class PersonaController {
 
 	// editarParcial
 	@PatchMapping("editarParcial/{id}")
-	public ResponseEntity<Persona> actualizarParcialmentePersona(@PathVariable Long id,
-			@RequestBody Map<String, Object> camposActualizables) {
-
-		System.out.println(camposActualizables.values());
-		// Obtener la persona actual
-		Persona personaActual = personaService.findPersona(id);
-
-		if (personaActual == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<?> actualizarParcialmentePersona(@PathVariable Long id,
+			@RequestBody Map<String, ?> camposActualizables) {
+		Persona persona = this.personaService.actualizarDatosParciales(id,camposActualizables);
+		if (persona != null) {
+			return new ResponseEntity<Persona>(this.personaService.findPersona(id), HttpStatus.OK);	
+		} else {
+			return new ResponseEntity<String>("Este id no esta asociado a ninguna persona", HttpStatus.OK);	
 		}
-
-		// Actualizar solo los campos permitidos
-		if (camposActualizables.containsKey("nombre")) {
-			personaActual.setNombre((String) camposActualizables.get("nombre"));
-		}
-		if (camposActualizables.containsKey("apellido")) {
-			personaActual.setApellido((String) camposActualizables.get("apellido"));
-		}
-		if (camposActualizables.containsKey("edad")) {
-			personaActual.setEdad((int) camposActualizables.get("edad"));
-		}
-		if (camposActualizables.containsKey("unaMascota")) {
-			List<Map<String, Integer>> listaDeMascotasArrayListMap = ((List<Map<String, Integer>>) camposActualizables
-					.get("unaMascota"));
-			List<Long> listaDeIds = new ArrayList<>();
-			// Extraer los valores de "id_mascota" y agregarlos a listaDeIds
-			for (Map<String, Integer> mascota : listaDeMascotasArrayListMap) {
-				// Asumiendo que cada objeto tiene una única entrada con clave "id_mascota"
-				Long id1 = mascota.get("id_mascota").longValue();
-				if (id1 != null) {
-					listaDeIds.add(id1);
-				}
-			}
-			List<Mascota> mascotas = new ArrayList<>();
-			for (Long idm : listaDeIds) {
-				mascotas.add(this.mascotaService.findMascota(idm));
-			}
-
-			personaActual.setUnaMascota(mascotas);
-		}
-
-		// Guardar la persona actualizada
-		personaService.savePersona(personaActual);
-
-		return new ResponseEntity<>(personaActual, HttpStatus.OK);
+		 
 	}
 
 }

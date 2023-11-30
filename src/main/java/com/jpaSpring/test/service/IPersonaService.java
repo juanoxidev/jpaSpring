@@ -3,6 +3,8 @@ package com.jpaSpring.test.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
+
 import com.jpaSpring.test.model.Persona;
 
 public interface IPersonaService {
@@ -30,7 +32,6 @@ public interface IPersonaService {
 
 	public void editPersona(Persona persona);
 
-	public void actualizarListaDeMascotas(Persona personaActual,
-			List<Map<String, Integer>> listaDeMascotasArrayListMap);
+	public Persona actualizarDatosParciales(Long id, Map<String, ?> camposActualizables);
 
 }
